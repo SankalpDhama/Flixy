@@ -13,6 +13,7 @@ function Signup() {
       const { email, password } = formValues;
       const auth = getAuth();
       await createUserWithEmailAndPassword(auth, email, password);
+      console.log("succesful sign in");
     } catch (error) {
       console.log(error);
     }
