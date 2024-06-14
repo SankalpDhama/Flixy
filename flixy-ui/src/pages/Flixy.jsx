@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import backgroundImage from "../assets/home.jpg";
 import movieLogo from "../assets/homeTitle.webp";
@@ -6,14 +6,26 @@ import { FaPlay } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import Navbar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMovies, getGenres } from "../store";
+import Slider from "../components/Slider";
 export default function Flixy() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const genresLoaded = useSelector((state) => state.flixy.genresLoaded);
+  const movies = useSelector((state) => state.flixy.movies);
+  useEffect(() => {
+    dispatch(getGenres());
+  }, []);
+  useEffect(() => {
+    if (genresLoaded) dispatch(fetchMovies({ type: "all" }));
+  }, [genresLoaded]);
   const [isScrolled, setIsScrolled] = useState(false);
   window.onscroll = () => {
     setIsScrolled(window.pageYOffset === 0 ? false : true);
     return () => (window.onscroll = null);
   };
+  // console.log(movises);
   return (
     <Container>
       <Navbar isScrolled={isScrolled} />
@@ -42,6 +54,7 @@ export default function Flixy() {
           </div>
         </div>
       </div>
+      <Slider movies={movies} />
     </Container>
   );
 }
